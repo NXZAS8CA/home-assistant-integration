@@ -756,7 +756,7 @@ class KlyqaLight(LightEntity):
         self._klyqa_device.status = state_complete
 
         self._attr_color_temp = (
-            float(state_complete.temperature)
+            min(float(state_complete.temperature),6500.0)
             if state_complete.temperature
             else 0
         )
