@@ -17,10 +17,6 @@ from homeassistant.core import HomeAssistant, Event
 from homeassistant.const import Platform
 from homeassistant.helpers.entity_component import EntityComponent
 
-from homeassistant.util.color import (
-    color_temperature_kelvin_to_mired,
-    color_temperature_mired_to_kelvin,
-)
 import traceback
 from collections.abc import Callable
 import asyncio
@@ -33,7 +29,7 @@ from homeassistant.components.group.light import LightGroup
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_BRIGHTNESS_PCT,
-    ATTR_COLOR_TEMP,
+    ATTR_COLOR_TEMP_KELVIN,
     ATTR_EFFECT,
     ATTR_HS_COLOR,
     ATTR_RGB_COLOR,
@@ -559,16 +555,16 @@ class KlyqaLight(LightEntity):
 
                 await send_event_cb.wait()
 
-        if ATTR_COLOR_TEMP in kwargs:
-            self._attr_color_temp = kwargs[ATTR_COLOR_TEMP]
+        if ATTR_COLOR_TEMP_KELVIN in kwargs:
+            self._attr_color_temp = kwargs[ATTR_COLOR_TEMP_KELVIN]
             args.extend(
                 [
                     "--temperature",
                     str(
-                        color_temperature_mired_to_kelvin(self._attr_color_temp)
-                        if self._attr_color_temp
-                        else 0
-                    ),
+                        self._attr_color_temp
+			if self._attr_color_temp
+			else 0
+		),
                 ]
             )
 
@@ -758,7 +754,7 @@ class KlyqaLight(LightEntity):
         self._klyqa_device.status = state_complete
 
         self._attr_color_temp = (
-            color_temperature_kelvin_to_mired(float(state_complete.temperature))
+            float(state_complete.temperature)
             if state_complete.temperature
             else 0
         )
