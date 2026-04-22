@@ -361,9 +361,11 @@ class KlyqaLight(LightEntity):
                 for x in device_traits
                 if "msg_key" in x and x["msg_key"] == "temperature"
             ]:
+                self._attr_supported_color_modes.discard(ColorMode.BRIGHTNESS)
                 self._attr_supported_color_modes.add(ColorMode.COLOR_TEMP)
 
             if [x for x in device_traits if "msg_key" in x and x["msg_key"] == "color"]:
+                self._attr_supported_color_modes.discard(ColorMode.BRIGHTNESS)
                 self._attr_supported_color_modes.add(ColorMode.RGB)
                 self._attr_supported_features |= LightEntityFeature.EFFECT  # type: ignore[assignment]
                 self._attr_effect_list = [x["label"] for x in api.SCENES]
