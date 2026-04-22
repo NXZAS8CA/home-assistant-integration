@@ -776,7 +776,11 @@ class KlyqaLight(LightEntity):
             if state_complete.mode == "cct"
             else ColorMode.COLOR_TEMP 
             if state_complete.mode == "cmd"
-            else ColorMode.BRIGHTNESS 
+            else ColorMode.RGB
+	    if ColorMode.RGB in self._attr_supported_color_modes
+	    else ColorMode.Color_TEMP
+	    if ColorMode.Color_TEMP in self._attr_supported_color_modes
+	    else ColorMode.BRIGHTNESS
         )
         self._attr_effect = ""
         if state_complete.mode == "cmd":
