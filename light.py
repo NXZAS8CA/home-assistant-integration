@@ -1,4 +1,5 @@
 """Support for klyqa lights."""
+
 from __future__ import annotations
 
 from collections.abc import Callable, Coroutine
@@ -164,7 +165,6 @@ async def create_klyqa_api_from_config(hass, config: ConfigType) -> HAKlyqaAccou
         else:
             raise Exception()
     except:  # noqa: E722 pylint: disable=bare-except
-
         LOGGER.error(
             "Could Error while trying to start Klyqa Integration from configuration.yaml"
         )
@@ -422,7 +422,6 @@ class KlyqaLight(LightEntity):
         )
 
         if self.config_entry:
-
             device_registry.async_get_or_create(
                 **{
                     "config_entry_id": self.config_entry.entry_id,
@@ -562,11 +561,7 @@ class KlyqaLight(LightEntity):
             args.extend(
                 [
                     "--temperature",
-                    str(
-                        self._attr_color_temp
-			if self._attr_color_temp
-			else 0
-		),
+                    str(self._attr_color_temp if self._attr_color_temp else 0),
                 ]
             )
 
@@ -586,7 +581,6 @@ class KlyqaLight(LightEntity):
         # separate power on+transition and other lamp attributes
 
         if len(args) > 0:
-
             if ATTR_TRANSITION in kwargs:
                 self._attr_transition_time = kwargs[ATTR_TRANSITION]
 
@@ -756,7 +750,7 @@ class KlyqaLight(LightEntity):
         self._klyqa_device.status = state_complete
 
         self._attr_color_temp = (
-            min(float(state_complete.temperature),6500.0)
+            min(float(state_complete.temperature), 6500.0)
             if state_complete.temperature
             else 0
         )
@@ -774,13 +768,13 @@ class KlyqaLight(LightEntity):
         self._attr_color_mode = (
             ColorMode.COLOR_TEMP
             if state_complete.mode == "cct"
-            else ColorMode.COLOR_TEMP 
+            else ColorMode.COLOR_TEMP
             if state_complete.mode == "cmd"
             else ColorMode.RGB
-	    if ColorMode.RGB in self._attr_supported_color_modes
-	    else ColorMode.Color_TEMP
-	    if ColorMode.Color_TEMP in self._attr_supported_color_modes
-	    else ColorMode.BRIGHTNESS
+            if ColorMode.RGB in self._attr_supported_color_modes
+            else ColorMode.COLOR_TEMP
+            if ColorMode.COLOR_TEMP in self._attr_supported_color_modes
+            else ColorMode.BRIGHTNESS
         )
         self._attr_effect = ""
         if state_complete.mode == "cmd":
